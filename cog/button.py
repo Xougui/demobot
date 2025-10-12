@@ -104,9 +104,4 @@ class ButtonExamples(commands.Cog):
         await interaction.response.send_message("Here are some examples of different buttons:", view=view)
 
 async def setup(bot: commands.Bot):
-    """Sets up the ButtonExamples cog.
-
-    Args:
-        bot (commands.Bot): The bot instance.
-    """
     await bot.add_cog(ButtonExamples(bot))

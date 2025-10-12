@@ -168,10 +168,6 @@ class Counter(commands.Cog):
         else:
             await message.delete()
 
+            
 async def setup(bot: commands.Bot):
-    """Sets up the Counter cog.
-
-    Args:
-        bot (commands.Bot): The bot instance.
-    """
     await bot.add_cog(Counter(bot))

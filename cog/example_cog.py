@@ -20,18 +20,11 @@ class Exemple(commands.Cog):
 
     @app_commands.command(name="exemple", description="An example command")
     async def exemple(self, interaction: discord.Interaction):
-        """Responds with a simple 'Exemple' message.
 
-        Args:
-            interaction (discord.Interaction): The interaction object.
-        """
         await interaction.response.send_message("Exemple")
 
-async def setup(bot: commands.Bot):
-    """Sets up the Exemple cog.
 
-    Args:
-        bot (commands.Bot): The bot instance.
-    """
-    
-    await bot.add_cog(Exemple(bot))
+
+# obligatoire dans un COG : ajout de la fonction setup
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Exemple(bot)) # appeer la classe du COG
