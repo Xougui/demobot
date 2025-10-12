@@ -44,6 +44,12 @@ class FollowupOrResponse(commands.Cog):
         # On envoie un message de followup ( visible uniquement par l'utilisateur qui a utilisé la commande )
         await interaction.followup.send("Ceci est un message de followup !", ephemeral=True)
 
+        # On peut envoyer AUTANT DE FOLLOWUP QUE L'ON VEUT ! 
+        # Mais il faut obligatoirement avoir répondu a l'interaction AVANT avec response.send_message ou response.defer
+        await interaction.followup.send("Ceci est un second message de followup !", ephemeral=True)
+        await interaction.followup.send("Ceci est un troisième message de followup !", ephemeral=True)
+        # ...
+
 
 async def setup(bot: commands.Bot): # fonction setup obligatoire dans un cog
     await bot.add_cog(FollowupOrResponse(bot)) # on ajoute la classe du cog au bot
