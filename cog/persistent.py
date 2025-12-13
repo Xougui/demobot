@@ -1,6 +1,7 @@
 import discord
-from discord.ext import commands
 from discord import app_commands
+from discord.ext import commands
+
 
 class PersistentView(discord.ui.View):
     """A persistent view with a single button.
@@ -8,15 +9,20 @@ class PersistentView(discord.ui.View):
     This view is persistent across bot restarts because it has a custom_id
     and is added to the bot in the cog's __init__.
     """
-    def __init__(self):
+
+    def __init__(self) -> None:
         """Initializes the persistent view.
 
         The timeout is set to None to make it persistent.
         """
         super().__init__(timeout=None)
 
-    @discord.ui.button(label="Button", style=discord.ButtonStyle.green, custom_id="persistent_button_example")
-    async def button(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(
+        label="Button",
+        style=discord.ButtonStyle.green,
+        custom_id="persistent_button_example",
+    )
+    async def button(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         """The callback for the button press.
 
         Responds with an ephemeral message when the button is clicked.
@@ -25,12 +31,15 @@ class PersistentView(discord.ui.View):
             interaction (discord.Interaction): The interaction from the button press.
             button (discord.ui.Button): The button that was clicked.
         """
-        await interaction.response.send_message("You clicked the button!", ephemeral=True)
+        await interaction.response.send_message(
+            "You clicked the button!", ephemeral=True
+        )
 
 
 class PersistentCog(commands.Cog):
     """A cog that demonstrates a persistent view."""
-    def __init__(self, bot: commands.Bot):
+
+    def __init__(self, bot: commands.Bot) -> None:
         """Initializes the PersistentCog.
 
         This is where the persistent view is registered with the bot.
@@ -41,16 +50,21 @@ class PersistentCog(commands.Cog):
         self.bot = bot
         self.bot.add_view(PersistentView())
 
-    @app_commands.command(name="testbutton", description="Test command for the persistent button.")
-    async def testbutton(self, interaction: discord.Interaction):
+    @app_commands.command(
+        name="testbutton", description="Test command for the persistent button."
+    )
+    async def testbutton(self, interaction: discord.Interaction) -> None:
         """Sends a message with a persistent button.
 
         Args:
             interaction (discord.Interaction): The interaction object.
         """
-        await interaction.response.send_message("Here is a button:", view=PersistentView())
+        await interaction.response.send_message(
+            "Here is a button:", view=PersistentView()
+        )
 
-async def setup(bot: commands.Bot):
+
+async def setup(bot: commands.Bot) -> None:
     """Sets up the PersistentCog.
 
     Args:

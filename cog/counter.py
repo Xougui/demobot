@@ -1,10 +1,12 @@
-import discord
-from discord.ext import commands
-from discord import app_commands
 import json
 import os
 
+import discord
+from discord import app_commands
+from discord.ext import commands
+
 COUNTER_FILE = "data/counter.json"
+
 
 def load_counter_data():
     """Loads counter data from the JSON file.
@@ -14,24 +16,27 @@ def load_counter_data():
     """
     if os.path.exists(COUNTER_FILE):
         try:
-            with open(COUNTER_FILE, 'r') as f:
+            with open(COUNTER_FILE) as f:
                 return json.load(f)
         except json.JSONDecodeError:
             return {}  # Return empty dict if JSON is corrupted
     return {}
 
-def save_counter_data(data):
+
+def save_counter_data(data) -> None:
     """Saves counter data to the JSON file.
 
     Args:
         data (dict): The counter data to save.
     """
-    with open(COUNTER_FILE, 'w') as f:
+    with open(COUNTER_FILE, "w") as f:
         json.dump(data, f, indent=4)
+
 
 class Counter(commands.Cog):
     """A cog for managing a counting channel in a guild."""
-    def __init__(self, bot: commands.Bot):
+
+    def __init__(self, bot: commands.Bot) -> None:
         """Initializes the Counter cog.
 
         Args:
@@ -41,13 +46,17 @@ class Counter(commands.Cog):
         self.guild_counters = load_counter_data()
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         """Called when the cog is ready."""
         print("Cog loaded: Counter")
 
-    @app_commands.command(name="counter", description="Sets the channel for the counting game.")
+    @app_commands.command(
+        name="counter", description="Sets the channel for the counting game."
+    )
     @app_commands.checks.has_permissions(administrator=True)
-    async def set_counter_channel(self, interaction: discord.Interaction, channel: discord.TextChannel):
+    async def set_counter_channel(
+        self, interaction: discord.Interaction, channel: discord.TextChannel
+    ) -> None:
         """Sets the channel for counting.
 
         This command requires administrator permissions.
@@ -61,18 +70,19 @@ class Counter(commands.Cog):
         if guild_id not in self.guild_counters:
             self.guild_counters[guild_id] = {"last_number": 0, "last_user_id": None}
 
-        self.guild_counters[guild_id]['counter_channel_id'] = channel.id
+        self.guild_counters[guild_id]["counter_channel_id"] = channel.id
         save_counter_data(self.guild_counters)
 
         embed_counter = discord.Embed(
             title="Counter Channel Set",
             description=f"The counting channel has been set to {channel.mention}.\nStart by sending the number `1`!",
-            color=discord.Color.green()
+            color=discord.Color.green(),
         )
 
         await channel.send(embed=embed_counter)
         await interaction.response.send_message(
-            f"The counter has been set up in {channel.mention}. You can start counting now!", ephemeral=True
+            f"The counter has been set up in {channel.mention}. You can start counting now!",
+            ephemeral=True,
         )
 
     def get_counter_channel(self, guild_id: int) -> int | None:
@@ -86,7 +96,7 @@ class Counter(commands.Cog):
         """
         guild_data = self.guild_counters.get(str(guild_id))
         if guild_data:
-            return guild_data.get('counter_channel_id')
+            return guild_data.get("counter_channel_id")
         return None
 
     def get_last_number(self, guild_id: int) -> int:
@@ -100,7 +110,7 @@ class Counter(commands.Cog):
         """
         guild_data = self.guild_counters.get(str(guild_id))
         if guild_data:
-            return guild_data.get('last_number', 0)
+            return guild_data.get("last_number", 0)
         return 0
 
     def get_last_user(self, guild_id: int) -> int | None:
@@ -114,10 +124,10 @@ class Counter(commands.Cog):
         """
         guild_data = self.guild_counters.get(str(guild_id))
         if guild_data:
-            return guild_data.get('last_user_id')
+            return guild_data.get("last_user_id")
         return None
 
-    def set_last_number(self, guild_id: int, number: int):
+    def set_last_number(self, guild_id: int, number: int) -> None:
         """Sets the last number counted in a guild.
 
         Args:
@@ -125,10 +135,10 @@ class Counter(commands.Cog):
             number (int): The number to set.
         """
         if str(guild_id) in self.guild_counters:
-            self.guild_counters[str(guild_id)]['last_number'] = number
+            self.guild_counters[str(guild_id)]["last_number"] = number
             save_counter_data(self.guild_counters)
 
-    def set_last_user(self, guild_id: int, user_id: int):
+    def set_last_user(self, guild_id: int, user_id: int) -> None:
         """Sets the last user who counted in a guild.
 
         Args:
@@ -136,11 +146,11 @@ class Counter(commands.Cog):
             user_id (int): The user ID to set.
         """
         if str(guild_id) in self.guild_counters:
-            self.guild_counters[str(guild_id)]['last_user_id'] = user_id
+            self.guild_counters[str(guild_id)]["last_user_id"] = user_id
             save_counter_data(self.guild_counters)
 
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message: discord.Message) -> None:
         """Handles the counting logic in the designated channel.
 
         Args:
@@ -162,12 +172,12 @@ class Counter(commands.Cog):
             if number == last_number + 1 and message.author.id != last_user:
                 self.set_last_number(message.guild.id, number)
                 self.set_last_user(message.guild.id, message.author.id)
-                await message.add_reaction('✅')
+                await message.add_reaction("✅")
             else:
                 await message.delete()
         else:
             await message.delete()
 
-            
-async def setup(bot: commands.Bot):
+
+async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Counter(bot))
