@@ -5,16 +5,21 @@ from discord.ext import commands, tasks
 from discord import app_commands
 from dotenv import load_dotenv
 
+# Load environment variables from the .env file
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 OWNER_ID = int(os.getenv("OWNER_ID"))
 
+# Set up the bot's "intents" (permissions to see certain events)
+# discord.Intents.all() enables all privileges, including reading message content and seeing members.
+# Make sure to enable these in the Discord Developer Portal!
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 
-# List of cogs to load on startup
-EXTENSIONS = ("cog.mp",
+# List of cogs (extensions) to load on startup
+# Each file in the 'cog' folder usually corresponds to one entry here.
+EXTENSIONS = ("cog.dm",
               "cog.example_cog",
               "cog.selector",
               "cog.button",
