@@ -1,6 +1,7 @@
 import discord
-from discord.ext import commands
 from discord import app_commands
+from discord.ext import commands
+
 
 class Exemple(commands.Cog):
     """
@@ -8,7 +9,7 @@ class Exemple(commands.Cog):
     A 'Cog' is a class that groups commands and listeners together.
     """
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.Bot) -> None:
         """
         The constructor method.
         It runs when the Cog is loaded.
@@ -19,7 +20,7 @@ class Exemple(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         """
         A listener event.
         This specific function runs when the bot is fully ready and online.
@@ -27,7 +28,7 @@ class Exemple(commands.Cog):
         print("Cog loaded: cog_example")
 
     @app_commands.command(name="example", description="An example slash command")
-    async def example(self, interaction: discord.Interaction):
+    async def example(self, interaction: discord.Interaction) -> None:
         """
         A simple slash command.
         Responds to /example with a message.
@@ -38,5 +39,5 @@ class Exemple(commands.Cog):
 
 # This setup function is MANDATORY for every extension/cog file.
 # It tells the bot how to load this specific cog.
-async def setup(bot: commands.Bot):
+async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Exemple(bot))
